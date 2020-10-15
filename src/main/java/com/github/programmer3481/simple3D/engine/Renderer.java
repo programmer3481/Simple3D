@@ -73,7 +73,7 @@ public class Renderer {
                         (float) -Math.toRadians(camera.getRotation().y),
                         (float) -Math.toRadians(camera.getRotation().z)));
 		view.translate(-camera.getPosition().x, -camera.getPosition().y, -camera.getPosition().z);
-		object.getShader().setUniform("matrix", camera.getViewMatrix().mul(view).mul(model));
+		object.getShader().setUniform("matrix", (new Matrix4f()).mul(camera.getViewMatrix()).mul(view).mul(model));
         glDrawElements(GL_TRIANGLES, object.getMesh().getIndices().length, GL_UNSIGNED_INT, 0);
         glUseProgram(0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
