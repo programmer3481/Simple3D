@@ -32,12 +32,12 @@ public class Main implements Runnable{
         window = new Window(WIDTH, HEIGHT, TITLE, new Vector3f(0.5f, 0.5f, 0.5f));
         testShader = new Shader("src/main/resources/testVS.glsl", "src/main/resources/testFS.glsl");
         testTexture = new Texture("src/main/resources/grass.png");
-        cubes = new Cube[20000];
-        for (int i = 0; i < 20000; i++) {
+        cubes = new Cube[10000];
+        for (int i = 0; i < 10000; i++) {
                 cubes[i] = new Cube(testShader, testTexture,
                         //new Vector3f(i*2, 0.0f, j*2),
                         new Vector3f((float)(Math.random() * 50), (float)(Math.random() * 50), (float)(Math.random() * 50)),
-                        new Vector3f(45.0f, 0.0f, -45.0f),
+                        new Vector3f(0.0f, 0.0f, 0.0f),
                         new Vector3f(1.0f, 1.0f, 1.0f));
             }
         camera = new Camera(new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(0.0f, 0.0f, 0.0f),

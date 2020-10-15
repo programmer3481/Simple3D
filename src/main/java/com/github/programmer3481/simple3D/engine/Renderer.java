@@ -58,20 +58,22 @@ public class Renderer {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, object.getTexture().getTextureID());
         glUseProgram(object.getShader().getProgramID());
-        object.getShader().setUniform("model", (new Matrix4f())
-                        .scale(object.getScale())
-                        .rotate((new Quaternionf()).rotateXYZ(
-                                (float) Math.toRadians(object.getRotation().x),
-                                (float) Math.toRadians(object.getRotation().y),
-                                (float) Math.toRadians(object.getRotation().z)))
-                        .translate(object.getPosition()));
-        object.getShader().setUniform("view", (new Matrix4f())
-                .rotate((new Quaternionf()).rotateXYZ(
+		
+		Matrix4f model = new Matrix4f();
+		model.scale(object.getScale());
+		model.rotate((new Quaternionf()).rotateXYZ(
+                            (float) Math.toRadians(object.getRotation().x),
+                            (float) Math.toRadians(object.getRotation().y),
+                            (float) Math.toRadians(object.getRotation().z)));
+		model.translate(object.getPosition());
+		
+		Matrix4f view = new Matrix4f();
+		view.rotate((new Quaternionf()).rotateXYZ(
                         (float) -Math.toRadians(camera.getRotation().x),
                         (float) -Math.toRadians(camera.getRotation().y),
-                        (float) -Math.toRadians(camera.getRotation().z)))
-                .translate(-camera.getPosition().x, -camera.getPosition().y, -camera.getPosition().z));
-        object.getShader().setUniform("projection", camera.getViewMatrix());
+                        (float) -Math.toRadians(camera.getRotation().z)));
+		view.translate(-camera.getPosition().x, -camera.getPosition().y, -camera.getPosition().z);
+		object.getShader().setUniform("matrix", camera.getViewMatrix().mul(view).mul(model));
         glDrawElements(GL_TRIANGLES, object.getMesh().getIndices().length, GL_UNSIGNED_INT, 0);
         glUseProgram(0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -87,20 +89,23 @@ public class Renderer {
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, cube.getTexture().getTextureID());
             glUseProgram(cube.getShader().getProgramID());
-            cube.getShader().setUniform("model", (new Matrix4f())
-                    .translate(cube.getPosition())
-                    .rotate((new Quaternionf()).rotateXYZ(
-                            (float) Math.toRadians(cube.getRotation().x),
-                            (float) Math.toRadians(cube.getRotation().y),
-                            (float) Math.toRadians(cube.getRotation().z)))
-                    .scale(cube.getScale()));
-            cube.getShader().setUniform("view", (new Matrix4f())
-                    .rotate((new Quaternionf()).rotateXYZ(
-                            (float) -Math.toRadians(camera.getRotation().x),
-                            (float) -Math.toRadians(camera.getRotation().y),
-                            (float) -Math.toRadians(camera.getRotation().z)))
-                    .translate(-camera.getPosition().x, -camera.getPosition().y, -camera.getPosition().z));
-            cube.getShader().setUniform("projection", camera.getViewMatrix());
+            Matrix4f model = new Matrix4f();
+            model.scale(cube.getScale());
+            model.rotate((new Quaternionf()).rotateXYZ(
+                    (float) Math.toRadians(cube.getRotation().x),
+                    (float) Math.toRadians(cube.getRotation().y),
+                    (float) Math.toRadians(cube.getRotation().z)));
+            model.translate(cube.getPosition());
+            Matrix4f view = new Matrix4f();
+            view.rotate((new Quaternionf()).rotateXYZ(
+                    (float) -Math.toRadians(camera.getRotation().x),
+                    (float) -Math.toRadians(camera.getRotation().y),
+                    (float) -Math.toRadians(camera.getRotation().z)));
+            view.translate(-camera.getPosition().x, -camera.getPosition().y, -camera.getPosition().z);
+            cube.getShader().setUniform("matrix", (new Matrix4f())
+                    .mul(camera.getViewMatrix())
+                    .mul(view)
+                    .mul(model));
             glDrawElements(GL_TRIANGLES, cubeMesh.getIndices().length, GL_UNSIGNED_INT, 0);
         }
         glUseProgram(0);
