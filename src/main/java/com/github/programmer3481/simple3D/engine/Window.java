@@ -53,7 +53,7 @@ public class Window {
         glfwMakeContextCurrent(window);
         createCapabilities();
         glEnable(GL_DEPTH_TEST);
-        //glEnable(GL_CULL_FACE);
+        glEnable(GL_CULL_FACE);
 
         glfwSetKeyCallback(window, input.getKeyboardCallback());
         glfwSetCursorPosCallback(window, input.getMouseMoveCallback());

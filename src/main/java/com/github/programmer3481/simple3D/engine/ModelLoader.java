@@ -30,13 +30,13 @@ public class ModelLoader {
             AIVector3D normal = normals.get(i);
             Vector3f meshNormal = new Vector3f(normal.x(), normal.y(), normal.z());
 
-            Vector2f meshTexCoord = new Vector2f(0, 0);
+            Vector2f meshTexCoord = new Vector2f(0.0f, 0.0f);
             if (mesh.mNumUVComponents().get(0) != 0) {
                 AIVector3D texture = mesh.mTextureCoords(0).get(i);
                 meshTexCoord.set(texture.x(), texture.y());
             }
 
-            vertexList[i] = new Vertex(meshVertex, meshNormal, meshTexCoord);
+            vertexList[i] = new Vertex(meshVertex, meshTexCoord, meshNormal);
         }
 
         int faceCount = mesh.mNumFaces();

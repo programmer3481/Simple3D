@@ -14,7 +14,7 @@ import static org.lwjgl.opengl.GL30.*;
 public class Mesh {
     private Vertex[] vertices;
     private int[] indices;
-    private int vao, vbo, tbo, cbo, ibo;
+    private int vao, vbo, tbo, cbo, ibo, nbo;
 
     public Mesh(Vertex[] vertices, int[] indices) {
         this.vertices = vertices;
@@ -66,6 +66,21 @@ public class Mesh {
         glBufferData(GL_ARRAY_BUFFER, colorBuffer, GL_STATIC_DRAW);
         glVertexAttribPointer(2, 3, GL_FLOAT, false, 0, 0);
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        FloatBuffer normalBuffer = MemoryUtil.memAllocFloat(vertices.length * 3);
+        float[] normalData = new float[vertices.length * 3];
+        for (int i = 0; i < vertices.length; i++) {
+            normalData[i * 3 + 0] = vertices[i].getNormal().x();
+            normalData[i * 3 + 1] = vertices[i].getNormal().y();
+            normalData[i * 3 + 2] = vertices[i].getNormal().z();
+        }
+        normalBuffer.put(normalData).flip();
+
+        nbo = glGenBuffers();
+        glBindBuffer(GL_ARRAY_BUFFER, nbo);
+        glBufferData(GL_ARRAY_BUFFER, normalBuffer, GL_STATIC_DRAW);
+        glVertexAttribPointer(3, 3, GL_FLOAT, false, 0, 0);
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         IntBuffer indicesBuffer = MemoryUtil.memAllocInt(indices.length);
         indicesBuffer.put(indices).flip();
 
@@ -81,6 +96,7 @@ public class Mesh {
         glDeleteBuffers(ibo);
         glDeleteBuffers(tbo);
         glDeleteBuffers(cbo);
+        glDeleteBuffers(nbo);
         glDeleteVertexArrays(vao);
     }
 
@@ -106,6 +122,10 @@ public class Mesh {
 
     public int getCBO() {
         return cbo;
+    }
+
+    public int getNBO() {
+        return nbo;
     }
 
     public int getIBO() {

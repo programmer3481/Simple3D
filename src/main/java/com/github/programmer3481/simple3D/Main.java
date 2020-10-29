@@ -36,7 +36,7 @@ public class Main implements Runnable{
         testTexture = new Texture("src/main/resources/bad.png");
         testShader = new Shader("src/main/resources/testVS.glsl", "src/main/resources/testFS.glsl", testTexture);
 
-        dragonMesh = ModelLoader.loadModel("src/main/resources/bunny.stl");
+        dragonMesh = ModelLoader.loadModel("src/main/resources/dragon.obj");
 
         dragon = new Object3D(testShader, dragonMesh, new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(1.0f, 1.0f, 1.0f));
         camera = new Camera(new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(0.0f, 0.0f, 0.0f),

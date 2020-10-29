@@ -54,6 +54,7 @@ public class Renderer {
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
         glEnableVertexAttribArray(2);
+        glEnableVertexAttribArray(3);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, object.getMesh().getIBO());
 
         for (int i = 0; i < object.getShader().getTexture().length; i++) {
@@ -87,6 +88,7 @@ public class Renderer {
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
         glEnableVertexAttribArray(2);
+        glEnableVertexAttribArray(3);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cubeMesh.getIBO());
         for (Cube cube : cubes) {
             for (int i = 0; i < cube.getShader().getTexture().length; i++) {

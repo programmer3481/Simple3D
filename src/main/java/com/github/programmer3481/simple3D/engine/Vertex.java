@@ -9,16 +9,19 @@ public class Vertex {
     private Vector2f texCoord;
     private Vector3f normal;
 
-    public Vertex(Vector3f position, Vector3f color, Vector2f texCoord) {
+    public Vertex(Vector3f position, Vector3f color, Vector2f texCoord, Vector3f normal) {
         this.position = position;
         this.color = color;
         this.texCoord = texCoord;
+        this.normal = normal;
+    }
+
+    public Vertex(Vector3f position, Vector2f texCoord, Vector3f normal) {
+        this(position, new Vector3f(1.0f, 1.0f, 1.0f), texCoord, normal);
     }
 
     public Vertex(Vector3f position, Vector2f texCoord) {
-        this.position = position;
-        this.color = new Vector3f(1.0f, 1.0f, 1.0f);
-        this.texCoord = texCoord;
+        this(position, new Vector3f(1.0f, 1.0f, 1.0f), texCoord, new Vector3f(0.0f, 0.0f, 1.0f));
     }
 
     public Vector3f getPosition() {
