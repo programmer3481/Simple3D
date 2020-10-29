@@ -13,7 +13,6 @@ public class Main implements Runnable{
     public Renderer renderer;
     public Shader testShader;
     public Texture testTexture;
-    //public Cube[] cubes;
     public Mesh dragonMesh;
     public Object3D dragon;
     public Camera camera;
@@ -36,23 +35,10 @@ public class Main implements Runnable{
         window = new Window(WIDTH, HEIGHT, TITLE, new Vector3f(0.5f, 0.5f, 0.5f));
         testTexture = new Texture("src/main/resources/bad.png");
         testShader = new Shader("src/main/resources/testVS.glsl", "src/main/resources/testFS.glsl", testTexture);
-        //cubes = new Cube[10000];
-        //for (int i = 0; i < 10000; i++) {
-        //        cubes[i] = new Cube(testShader,
-        //                //new Vector3f(i*2, 0.0f, j*2),
-        //                new Vector3f((float)(Math.random() * 50), (float)(Math.random() * 50), (float)(Math.random() * 50)),
-        //                new Vector3f(0.0f, 0.0f, 0.0f),
-        //                new Vector3f(1.0f, 1.0f, 1.0f));
-        //    }
-        //dragonMesh = ModelLoader.loadModel("C:\\Chrome\\gradle-workspace\\Simple3D\\src\\main\\resources\\dragon.obj");
-        dragonMesh = new Mesh(new Vertex[] {
-                new Vertex(new Vector3f(-1.0f, -1.0f, 0.0f), new Vector2f(0.0f, 0.0f)),
-                new Vertex(new Vector3f(0.0f, 1.0f, 0.0f), new Vector2f(0.5f, 1.0f)),
-                new Vertex(new Vector3f(1.0f, -1.0f, 0.0f), new Vector2f(1.0f, 0.0f))
-        }, new int[] {
-                0, 1, 2
-        });
-        dragon = new Object3D(testShader, dragonMesh, new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(0.0f, 0.0f, 0.0f));
+
+        dragonMesh = ModelLoader.loadModel("src/main/resources/bunny.stl");
+
+        dragon = new Object3D(testShader, dragonMesh, new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(1.0f, 1.0f, 1.0f));
         camera = new Camera(new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(0.0f, 0.0f, 0.0f),
                 70.0f, (float)WIDTH/(float)HEIGHT, 0.1f,1000.0f);
         renderer = new Renderer();
