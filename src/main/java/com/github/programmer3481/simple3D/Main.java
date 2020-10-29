@@ -1,7 +1,9 @@
 package com.github.programmer3481.simple3D;
 
 import com.github.programmer3481.simple3D.engine.*;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.lwjgl.system.CallbackI;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -11,11 +13,13 @@ public class Main implements Runnable{
     public Renderer renderer;
     public Shader testShader;
     public Texture testTexture;
-    public Cube[] cubes;
+    //public Cube[] cubes;
+    public Mesh dragonMesh;
+    public Object3D dragon;
     public Camera camera;
     public static final int WIDTH = 1280;
     public static final int HEIGHT = 720;
-    public static final String TITLE = "Snake";
+    public static final String TITLE = "LWJGL";
 
     public long deltaTimeStart;
     public float deltaTime;
@@ -30,16 +34,25 @@ public class Main implements Runnable{
 
     public void init() {
         window = new Window(WIDTH, HEIGHT, TITLE, new Vector3f(0.5f, 0.5f, 0.5f));
-        testShader = new Shader("src/main/resources/testVS.glsl", "src/main/resources/testFS.glsl");
-        testTexture = new Texture("src/main/resources/grass.png");
-        cubes = new Cube[10000];
-        for (int i = 0; i < 10000; i++) {
-                cubes[i] = new Cube(testShader, testTexture,
-                        //new Vector3f(i*2, 0.0f, j*2),
-                        new Vector3f((float)(Math.random() * 50), (float)(Math.random() * 50), (float)(Math.random() * 50)),
-                        new Vector3f(0.0f, 0.0f, 0.0f),
-                        new Vector3f(1.0f, 1.0f, 1.0f));
-            }
+        testTexture = new Texture("src/main/resources/bad.png");
+        testShader = new Shader("src/main/resources/testVS.glsl", "src/main/resources/testFS.glsl", testTexture);
+        //cubes = new Cube[10000];
+        //for (int i = 0; i < 10000; i++) {
+        //        cubes[i] = new Cube(testShader,
+        //                //new Vector3f(i*2, 0.0f, j*2),
+        //                new Vector3f((float)(Math.random() * 50), (float)(Math.random() * 50), (float)(Math.random() * 50)),
+        //                new Vector3f(0.0f, 0.0f, 0.0f),
+        //                new Vector3f(1.0f, 1.0f, 1.0f));
+        //    }
+        //dragonMesh = ModelLoader.loadModel("C:\\Chrome\\gradle-workspace\\Simple3D\\src\\main\\resources\\dragon.obj");
+        dragonMesh = new Mesh(new Vertex[] {
+                new Vertex(new Vector3f(-1.0f, -1.0f, 0.0f), new Vector2f(0.0f, 0.0f)),
+                new Vertex(new Vector3f(0.0f, 1.0f, 0.0f), new Vector2f(0.5f, 1.0f)),
+                new Vertex(new Vector3f(1.0f, -1.0f, 0.0f), new Vector2f(1.0f, 0.0f))
+        }, new int[] {
+                0, 1, 2
+        });
+        dragon = new Object3D(testShader, dragonMesh, new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(0.0f, 0.0f, 0.0f));
         camera = new Camera(new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(0.0f, 0.0f, 0.0f),
                 70.0f, (float)WIDTH/(float)HEIGHT, 0.1f,1000.0f);
         renderer = new Renderer();
@@ -53,7 +66,7 @@ public class Main implements Runnable{
     }
 
     public void render() {
-        renderer.renderCubes(cubes, camera);
+        renderer.render(dragon, camera);
         window.swapBuffers();
     }
 

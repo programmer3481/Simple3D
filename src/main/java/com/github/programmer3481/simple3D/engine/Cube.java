@@ -4,12 +4,10 @@ import org.joml.Vector3f;
 
 public class Cube {
     private Shader shader;
-    private Texture texture;
     private Vector3f position, rotation, scale;
 
-    public Cube(Shader shader, Texture texture, Vector3f position, Vector3f rotation, Vector3f scale) {
+    public Cube(Shader shader, Vector3f position, Vector3f rotation, Vector3f scale) {
         this.shader = shader;
-        this.texture = texture;
         this.position = position;
         this.rotation = rotation;
         this.scale = scale;
@@ -17,10 +15,6 @@ public class Cube {
 
     public Shader getShader() {
         return shader;
-    }
-
-    public Texture getTexture() {
-        return texture;
     }
 
     public Vector3f getPosition() {

@@ -17,8 +17,9 @@ import static org.lwjgl.opengl.GL20.glGetProgramInfoLog;
 public class Shader {
     private String vertexFile, fragmentFile;
     private int programID, vertexID, fragmentID;
+    private Texture texture[];
 
-    public Shader(String vert, String frag) {
+    public Shader(String vert, String frag, Texture[] textures) {
         try {
             vertexFile = Files.readString(Path.of(vert));
             fragmentFile = Files.readString(Path.of(frag));
@@ -66,6 +67,15 @@ public class Shader {
         glDetachShader(programID, fragmentID);
         glDeleteShader(vertexID);
         glDeleteShader(fragmentID);
+        this.texture = textures;
+
+        for (int i = 0; i < textures.length; i++) {
+            setUniform("tex" + (i + 1), i);
+        }
+    }
+
+    public Shader(String vert, String frag, Texture texture) {
+        this(vert, frag, new Texture[] {texture});
     }
 
     public void destroy() {
@@ -104,5 +114,9 @@ public class Shader {
         FloatBuffer matrix = MemoryUtil.memAllocFloat(4 * 4 );
         matrix.put(value.get(new float[16])).flip();
         glUniformMatrix4fv(getUniformLocation(name), false, matrix);
+    }
+
+    public Texture[] getTexture() {
+        return texture;
     }
 }

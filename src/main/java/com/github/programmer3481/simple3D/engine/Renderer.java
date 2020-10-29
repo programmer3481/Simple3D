@@ -55,8 +55,11 @@ public class Renderer {
         glEnableVertexAttribArray(1);
         glEnableVertexAttribArray(2);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, object.getMesh().getIBO());
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, object.getTexture().getTextureID());
+
+        for (int i = 0; i < object.getShader().getTexture().length; i++) {
+            glActiveTexture(GL_TEXTURE0 + i);
+            glBindTexture(GL_TEXTURE_2D, object.getShader().getTexture()[i].getTextureID());
+        }
         glUseProgram(object.getShader().getProgramID());
 		
 		Matrix4f model = new Matrix4f();
@@ -86,8 +89,10 @@ public class Renderer {
         glEnableVertexAttribArray(2);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cubeMesh.getIBO());
         for (Cube cube : cubes) {
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, cube.getTexture().getTextureID());
+            for (int i = 0; i < cube.getShader().getTexture().length; i++) {
+                glActiveTexture(GL_TEXTURE0 + i);
+                glBindTexture(GL_TEXTURE_2D, cube.getShader().getTexture()[i].getTextureID());
+            }
             glUseProgram(cube.getShader().getProgramID());
             Matrix4f model = new Matrix4f();
             model.scale(cube.getScale());
