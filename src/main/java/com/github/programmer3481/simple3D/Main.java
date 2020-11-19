@@ -3,7 +3,7 @@ package com.github.programmer3481.simple3D;
 import com.github.programmer3481.simple3D.engine.*;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
-import org.lwjgl.system.CallbackI;
+import com.github.programmer3481.easyBullet.EasyBullet;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -33,10 +33,10 @@ public class Main implements Runnable{
 
     public void init() {
         window = new Window(WIDTH, HEIGHT, TITLE, new Vector3f(0.5f, 0.5f, 0.5f));
-        testTexture = new Texture("src/main/resources/bad.png");
+        testTexture = new Texture("src/main/resources/prototype.png");
         testShader = new Shader("src/main/resources/testVS.glsl", "src/main/resources/testFS.glsl", testTexture);
 
-        dragonMesh = ModelLoader.loadModel("src/main/resources/dragon.obj");
+        dragonMesh = ModelLoader.loadModel("src/main/resources/box.obj");
 
         dragon = new Object3D(testShader, dragonMesh, new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(1.0f, 1.0f, 1.0f));
         camera = new Camera(new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(0.0f, 0.0f, 0.0f),

@@ -1,2 +1,4 @@
 rootProject.name = 'Simple3D'
+include ":EasyBullet"
+include 'EasyBullet'
 
