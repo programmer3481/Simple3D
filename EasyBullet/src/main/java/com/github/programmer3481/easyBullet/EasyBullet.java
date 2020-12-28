@@ -1,47 +1,34 @@
 package com.github.programmer3481.easyBullet;
 
-import com.bulletphysics.collision.broadphase.BroadphaseInterface;
-import com.bulletphysics.collision.broadphase.DbvtBroadphase;
-import com.bulletphysics.collision.broadphase.Dispatcher;
-import com.bulletphysics.collision.dispatch.CollisionConfiguration;
-import com.bulletphysics.collision.dispatch.CollisionDispatcher;
-import com.bulletphysics.collision.dispatch.DefaultCollisionConfiguration;
-import com.bulletphysics.collision.shapes.BoxShape;
-import com.bulletphysics.collision.shapes.SphereShape;
-import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
-import com.bulletphysics.dynamics.DynamicsWorld;
-import com.bulletphysics.dynamics.RigidBody;
-import com.bulletphysics.dynamics.RigidBodyConstructionInfo;
-import com.bulletphysics.dynamics.constraintsolver.ConstraintSolver;
-import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
-import com.bulletphysics.linearmath.DefaultMotionState;
-import com.bulletphysics.linearmath.MotionState;
-import com.bulletphysics.linearmath.Transform;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.bullet.Bullet;
+import com.badlogic.gdx.physics.bullet.collision.*;
+import com.badlogic.gdx.physics.bullet.dynamics.*;
+import com.badlogic.gdx.physics.bullet.linearmath.btDefaultMotionState;
+import com.badlogic.gdx.physics.bullet.linearmath.btMotionState;
+import com.badlogic.gdx.physics.bullet.linearmath.btTransform;
 
-import javax.vecmath.Matrix4f;
-import javax.vecmath.Quat4f;
-import javax.vecmath.Vector3f;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
-
 
 public class EasyBullet {
-    public DynamicsWorld world;
-    public Dispatcher dispatcher;
-    public CollisionConfiguration collisionConfig;
-    public BroadphaseInterface broadphase;
-    public ConstraintSolver solver;
-    public Map<String, RigidBody> bodies = new HashMap<>()
-    public ArrayList<RigidBody> bodies = new ArrayList<>();
+    public btDynamicsWorld world;
+    public btDispatcher dispatcher;
+    public btCollisionConfiguration collisionConfig;
+    public btBroadphaseInterface broadphase;
+    public btConstraintSolver solver;
+    public HashMap<String, btRigidBody> bodies = new HashMap<>();
 
     public EasyBullet(float gravity) {
-        collisionConfig = new DefaultCollisionConfiguration();
-        dispatcher = new CollisionDispatcher(collisionConfig);
-        broadphase = new DbvtBroadphase();
-        solver = new SequentialImpulseConstraintSolver();
-        world = new DiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfig);
-        world.setGravity(new Vector3f(0.0f, gravity, 0.0f));
+        Bullet.init();
+
+        collisionConfig = new btDefaultCollisionConfiguration();
+        dispatcher = new btCollisionDispatcher(collisionConfig);
+        broadphase = new btDbvtBroadphase();
+        solver = new btSequentialImpulseConstraintSolver();
+        world = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfig);
+        world.setGravity(new Vector3(0.0f, gravity, 0.0f));
     }
 
     public EasyBullet() {
@@ -53,45 +40,92 @@ public class EasyBullet {
     }
 
     public void addBoxRB(org.joml.Vector3f dimensions, org.joml.Vector3f position,
-                         org.joml.Quaternionf rotation, float mass) {
-        Transform t = new Transform();
+                         org.joml.Quaternionf rotation, float mass, String name) {
+        btTransform t = new btTransform();
         t.setIdentity();
-        t.set(new Matrix4f(JToV(rotation), JToV(position), 1.0f));
-        BoxShape box = new BoxShape(JToV(dimensions.mul(2.0f)));
-        Vector3f inertia = new Vector3f(0.0f, 0.0f, 0.0f);
+        t.setOrigin(JToV(position));
+        t.setRotation(JToV(rotation));
+        btBoxShape box = new btBoxShape(JToV(dimensions.mul(2.0f)));
+        Vector3 inertia = new Vector3(0.0f, 0.0f, 0.0f);
         if (mass != 0.0f) {
             box.calculateLocalInertia(mass, inertia);
         }
-        MotionState motion = new DefaultMotionState(t);
-        RigidBodyConstructionInfo info = new RigidBodyConstructionInfo(mass, motion, box, inertia);
-        RigidBody body = new RigidBody(info);
+        float[] floatArray = new float[16];
+        t.getOpenGLMatrix(floatArray);
+        btMotionState motion = new btDefaultMotionState(new Matrix4(floatArray));
+        btRigidBody.btRigidBodyConstructionInfo info =
+                new btRigidBody.btRigidBodyConstructionInfo(mass, motion, box, inertia);
+        btRigidBody body = new btRigidBody(info);
         world.addRigidBody(body);
-        bodies.add(body);
+        bodies.put(name, body);
     }
 
     public void addSphereRB(float rad, org.joml.Vector3f position,
-                            org.joml.Quaternionf rotation, float mass) {
-        Transform t = new Transform();
+                            org.joml.Quaternionf rotation, float mass, String name) {
+        btTransform t = new btTransform();
         t.setIdentity();
-        t.set(new Matrix4f(JToV(rotation), JToV(position), 1.0f));
-        SphereShape sphere = new SphereShape(rad);
-        Vector3f inertia = new Vector3f(0.0f, 0.0f, 0.0f);
+        t.setOrigin(JToV(position));
+        t.setRotation(JToV(rotation));
+        btSphereShape sphere = new btSphereShape(rad);
+        Vector3 inertia = new Vector3(0.0f, 0.0f, 0.0f);
         if (mass != 0.0f) {
             sphere.calculateLocalInertia(mass, inertia);
         }
-        MotionState motion = new DefaultMotionState(t);
-        RigidBodyConstructionInfo info = new RigidBodyConstructionInfo(mass, motion, sphere, inertia);
-        RigidBody body = new RigidBody(info);
+        float[] floatArray = new float[16];
+        t.getOpenGLMatrix(floatArray);
+        btMotionState motion = new btDefaultMotionState(new Matrix4(floatArray));
+        btRigidBody.btRigidBodyConstructionInfo info =
+                new btRigidBody.btRigidBodyConstructionInfo(mass, motion, sphere, inertia);
+        btRigidBody body = new btRigidBody(info);
         world.addRigidBody(body);
-        bodies.add(body);
+        bodies.put(name, body);
     }
 
-    private Vector3f JToV(org.joml.Vector3f in) {
-        return new Vector3f(in.x, in.y, in.z);
+    public void addCapsuleRB(float rad, float height, org.joml.Vector3f position,
+                            org.joml.Quaternionf rotation, float mass, String name) {
+        btTransform t = new btTransform();
+        t.setIdentity();
+        t.setOrigin(JToV(position));
+        t.setRotation(JToV(rotation));
+        btCapsuleShape capsule = new btCapsuleShape(rad, height);
+        Vector3 inertia = new Vector3(0.0f, 0.0f, 0.0f);
+        if (mass != 0.0f) {
+            capsule.calculateLocalInertia(mass, inertia);
+        }
+        float[] floatArray = new float[16];
+        t.getOpenGLMatrix(floatArray);
+        btMotionState motion = new btDefaultMotionState(new Matrix4(floatArray));
+        btRigidBody.btRigidBodyConstructionInfo info =
+                new btRigidBody.btRigidBodyConstructionInfo(mass, motion, capsule, inertia);
+        btRigidBody body = new btRigidBody(info);
+        world.addRigidBody(body);
+        bodies.put(name, body);
     }
 
-    private Quat4f JToV(org.joml.Quaternionf in) {
-        return new Quat4f(in.x, in.y, in.z, in.w);
+    public void removeRB(String name) {
+        world.removeRigidBody(bodies.get(name));
+        bodies.remove(name);
     }
 
+    public void lockMovement(boolean xr, boolean yr, boolean zr,
+                             boolean x, boolean y, boolean z, String name) {
+        bodies.get(name).setAngularFactor(new Vector3(BToF(xr) , BToF(yr), BToF(zr)));
+        bodies.get(name).setLinearFactor(new Vector3(BToF(x), BToF(y), BToF(z)));
+    }
+
+    public void applyForce(String name, Vector3 force) {
+        bodies.get(name).applyCentralForce(force);
+    }
+
+    private Vector3 JToV(org.joml.Vector3f in) {
+        return new Vector3(in.x, in.y, in.z);
+    }
+
+    private Quaternion JToV(org.joml.Quaternionf in) {
+        return new Quaternion(in.x, in.y, in.z, in.w);
+    }
+
+    private float BToF(boolean in) {
+        return in ? 1.0f : 0.0f;
+    }
 }

@@ -11,6 +11,7 @@ repositories {
 
 dependencies {
     api "org.joml:joml:1.9.25"
-    implementation group: 'cz.advel.jbullet', name: 'jbullet', version: '20101010'
+    implementation "com.badlogicgames.gdx:gdx-bullet:1.9.3"
+    runtimeOnly "com.badlogicgames.gdx:gdx-bullet-platform:1.9.3:natives-desktop"
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
